@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spectrum V2 — Эпический RP / SMP Сервер Minecraft</title>
+  <meta name="description" content="Spectrum V2 — атмосферный RP/SMP сервер Minecraft с модом Create, Farmer's Delight и глубоким ролевым сюжетом.">
+  <meta property="og:title" content="Spectrum V2 — RP / SMP Minecraft">
+  <meta property="og:description" content="Атмосферный ламповый сервер с инженерным модом Create и ролевым сюжетом.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Marcellus&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Minefite Preloader -->
+  <div id="preloader">
+    <div class="loader-crystal"><i data-lucide="sparkles" style="width:36px; height:36px;"></i></div>
+    <div class="loader-title">SPECTRUM V2</div>
+  </div>
+
+  <!-- Particle Background -->
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="app-layer">
+    <header id="mainHeader">
+      <div class="header-container">
+        <div class="logo" onclick="switchTab('mainSection')">
+          <div class="logo-icon"><i data-lucide="sparkles"></i></div>
+          <span class="logo-text">SPECTRUM V2</span>
+        </div>
+        <nav>
+          <a href="#" class="nav-link active" onclick="switchTab('mainSection', this)"><i data-lucide="home" style="width:16px;"></i> Главная</a>
+          <a href="#" class="nav-link disabled-link" id="navGuideBtn" onclick="switchTab('guideSection', this)"><i data-lucide="lock" id="guideLockIcon" style="width:16px;"></i> Гайд по входу</a>
+          <a href="#" class="nav-link" onclick="switchTab('newsSection', this)"><i data-lucide="newspaper" style="width:16px;"></i> Новости</a>
+          <a href="#" class="nav-link" onclick="switchTab('mapSection', this)"><i data-lucide="map" style="width:16px;"></i> Карта</a>
+          <a href="#" class="nav-link" onclick="switchTab('loreSection', this)"><i data-lucide="book-open" style="width:16px;"></i> Лор & Квенты</a>
+          <a href="#" class="nav-link" onclick="switchTab('rulesSection', this)"><i data-lucide="scale" style="width:16px;"></i> Правила</a>
+          <a href="#" class="nav-link" onclick="switchTab('communitySection', this)"><i data-lucide="message-square" style="width:16px;"></i> Сообщество</a>
+          <a href="#" class="nav-link" id="masterNavBtn" style="display:none; color:var(--accent-gold); font-weight:800;" onclick="openModal('masterAdminModal')"><i data-lucide="crown" style="width:16px;"></i> Мастер Админка</a>
+          <a href="#" class="nav-link" onclick="switchTab('cabinetSection', this)" style="color:var(--accent-light); font-weight:800;"><i data-lucide="user" style="width:16px;"></i> Профиль</a>
+        </nav>
+        <div class="header-actions" id="userHeaderBlock">
+          <button class="btn btn-outline" onclick="openModal('loginModal')">Вход</button>
+          <button class="btn btn-primary" onclick="openModal('regModal')">Регистрация</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- SECTION 1: MAIN HERO PAGE -->
+    <div id="mainSection" class="page-section active-section">
+      <div class="minefite-banner">
+        <div class="banner-content">
+          <h1>SPECTRUM V2 — <span>РП проект</span> Minecraft</h1>
+          <p>Атмосферный ламповый сервер с инженерным модом Create, кулинарией Farmer's Delight и глубоким ролевым сюжетом.</p>
+          <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <button class="btn btn-gold" onclick="openModal('regModal')">Начать игру ►</button>
+            <button class="btn btn-outline" id="bannerMiniGuideBtn" onclick="switchTab('guideSection', document.getElementById('navGuideBtn'))">
+              <i data-lucide="lock" id="bannerLockIcon" style="width:16px;"></i> Мини гайд
+            </button>
+          </div>
+        </div>
+        <div class="banner-image-preview">
+          <div class="banner-image-overlay">
+            <span style="color:#fff; font-weight:800; font-size:0.9rem;">Аметистовый Разлом V2</span>
+            <span style="color:var(--accent-emerald); font-weight:800; font-size:0.85rem;">● 39 онлайн</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-tracker">
+        <div class="tracker-steps">
+          <div class="step-item active" id="step1"><div class="step-icon">1</div><div>Правила</div></div>
+          <div class="step-item" id="step2"><div class="step-icon">2</div><div>Регистрация</div></div>
+          <div class="step-item" id="step3"><div class="step-icon">3</div><div>Анкета & Чат</div></div>
+          <div class="step-item" id="step4"><div class="step-icon">4</div><div>IP & Сборка</div></div>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <div style="text-align: left;">
+          <h4 style="color:#fff; font-size:1.1rem; font-family:var(--font-title);">Статус Доступа:</h4>
+          <p id="accessStatusText" style="color:var(--text-muted); font-size:0.9rem;">Ознакомьтесь с правилами ниже для начала</p>
+        </div>
+        <div class="ip-box">
+          <i data-lucide="lock" style="color:var(--text-muted); width:20px;"></i>
+          <span class="ip-text" id="ipText">•••••••••••••••••</span>
+          <button class="btn btn-outline" id="copyIpBtn" disabled onclick="copyIp()" style="padding: 0.5rem 1rem; font-size:0.85rem;">Копировать IP</button>
+        </div>
+      </div>
+
+      <div class="servers-grid">
+        <div class="server-card">
+          <div class="server-card-bg" style="background-image: url('https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80');"></div>
+          <div class="online-badge"><div class="online-dot"></div> 39 играют</div>
+          <h2>Спектрум-Центр</h2>
+          <p>Крупный инженерно-текстовый Role Play сервер с постройками на Create.</p>
+          <button class="btn btn-outline" style="width:fit-content;" onclick="openModal('modListModal')">Подробнее (Список модов) →</button>
+        </div>
+
+        <div class="server-card">
+          <div class="server-card-bg" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80');"></div>
+          <div class="online-badge"><div class="online-dot"></div> 12 играют</div>
+          <h2>Аметистовый Остров</h2>
+          <p>Голосовой Role Play сервер с магией Спектра и кулинарией.</p>
+          <button class="btn btn-outline" style="width:fit-content;" onclick="switchTab('loreSection')">Подробнее →</button>
+        </div>
+      </div>
+
+      <div class="gallery-section">
+        <div class="gallery-grid">
+          <div class="gallery-item"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80" alt="RP Scene"></div>
+          <div class="gallery-item"><img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80" alt="RP Scene"></div>
+          <div class="gallery-item gallery-large"><img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80" alt="Tavern RP"></div>
+        </div>
+      </div>
+
+      <section class="content-section">
+        <div class="card-box" style="border-color: var(--accent-gold); background: linear-gradient(135deg, rgba(35, 25, 10, 0.85), rgba(14, 10, 28, 0.95));">
+          <h2 style="color:var(--accent-gold);"><i data-lucide="heart" style="color:var(--accent-gold)"></i> Особая Благодарность</h2>
+          <div id="specialThanksDisplay">Выражаем огромную благодарность команде строителей, скриптеров и всем резидентам, поддержавшим открытие Spectrum V2!</div>
+
+          <div id="ownerThanksEditBlock" style="display:none; margin-top:1.5rem; border-top:1px dashed var(--accent-gold); padding-top:1rem;">
+            <div class="form-group">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <label style="color:var(--accent-gold);">Редактирование благодарности (Только для Владельца)</label>
+                <button type="button" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="insertImgPrompt('thanksInput')">🖼️ Вставить картинку</button>
+              </div>
+              <textarea id="thanksInput" class="form-control" rows="3"></textarea>
+            </div>
+            <button class="btn btn-gold" onclick="saveSpecialThanks()"><i data-lucide="save" style="width:16px;"></i> Сохранить благодарность</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION 2: JOIN GUIDE -->
+    <div id="guideSection" class="page-section">
+      <section class="content-section">
+        <div class="card-box">
+          <h2><i data-lucide="compass" style="color:var(--accent-light)"></i> Полный Гайд по входу на сервер</h2>
+          <div id="guideDisplayDesc">Следуйте простой пошаговой инструкции для установки модов и первого захода на Spectrum V2.</div>
+
+          <div class="guide-box">
+            <div class="guide-step">
+              <div class="guide-num">1</div>
+              <div>
+                <h3 style="color:#fff; font-family:var(--font-title); font-size:1.3rem;">Загрузка модпака</h3>
+                <p style="font-size:0.95rem; color:var(--text-muted); margin-top:0.3rem;">Загрузите официальный zip-архив с модами Create, Farmer's Delight, оптифайн-текстурами и аметистовой магией.</p>
+                <a href="https://drive.google.com" id="modpackGuideBtn" target="_blank" class="btn btn-primary" style="margin-top:0.8rem; padding:0.5rem 1rem; font-size:0.85rem;">
+                  <i data-lucide="download" style="width:16px;"></i> Скачать сборку с Google Диска
+                </a>
+              </div>
+            </div>
+
+            <div class="guide-step">
+              <div class="guide-num">2</div>
+              <div>
+                <h3 style="color:#fff; font-family:var(--font-title); font-size:1.3rem;">Установка файлов в папки игры</h3>
+                <p style="font-size:0.95rem; color:var(--text-muted); margin-top:0.3rem;">Откройте рабочей директорию вашего лаунчера (нажмите <code>Win + R</code> и введите <code>%appdata%/.minecraft</code>). Распакуйте все моды из архива в папку <code>mods</code>.</p>
+              </div>
+            </div>
+
+            <div class="guide-step">
+              <div class="guide-num">3</div>
+              <div>
+                <h3 style="color:#fff; font-family:var(--font-title); font-size:1.3rem;">Выбор версионного профиля</h3>
+                <p style="font-size:0.95rem; color:var(--text-muted); margin-top:0.3rem;">Запустите вашего клиента (TLauncher / Prism / CurseForge / Modrinth) и выберите версию профиля <b>Forge / NeoForge / Fabric 1.20.1</b>.</p>
+              </div>
+            </div>
+
+            <div class="guide-step" style="border-left-color: var(--accent-gold); background: rgba(30, 20, 10, 0.7);">
+              <div class="guide-num" style="background: var(--accent-gold); color: #000;">🏰</div>
+              <div>
+                <h3 style="color:var(--accent-gold); font-family:var(--font-title); font-size:1.3rem;">Вступление и создание Фракций / Гильдий</h3>
+                <p style="font-size:0.95rem; color:var(--text-muted); margin-top:0.3rem;">
+                  • <b>Как вступить во фракцию/гильдию:</b> Чтобы присоединиться к уже существующему клану, ордену или объединению, свяжитесь напрямую с главой/владельцем этой фракции.<br>
+                  • <b>Как создать свою фракцию:</b> Для регистрации нового ордена нужно подать отдельную анкету с идеологией и гербом.
+                </p>
+                <a href="https://t.me/spectrum_smp" id="factionApplyLinkBtn" target="_blank" class="btn btn-gold" style="margin-top:0.8rem; padding:0.5rem 1rem; font-size:0.85rem;">
+                  <i data-lucide="shield-plus" style="width:16px;"></i> Подать заявку на фракцию в ТГ
+                </a>
+              </div>
+            </div>
+
+            <div class="guide-step" style="margin-bottom:0;">
+              <div class="guide-num">4</div>
+              <div>
+                <h3 style="color:#fff; font-family:var(--font-title); font-size:1.3rem;">Подключение к IP сервера</h3>
+                <p style="font-size:0.95rem; color:var(--text-muted); margin-top:0.3rem;">В главном меню игры перейдите в «Сетевая игра» → «Добавить» и укажите IP сервера:</p>
+                <div style="display:inline-flex; align-items:center; gap:1rem; background:rgba(10, 7, 20, 0.8); padding:0.5rem 1rem; border-radius:12px; border:1px dashed var(--accent-purple); margin-top:0.6rem;">
+                  <span style="font-family:monospace; font-size:1.1rem; color:var(--accent-light); font-weight:bold;">play.spectrum-v2.ru</span>
+                  <button class="btn btn-outline" onclick="copyIp()" style="padding:0.3rem 0.6rem; font-size:0.75rem;">Копировать</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION 3: NEWS -->
+    <div id="newsSection" class="page-section">
+      <section class="content-section">
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+            <h2><i data-lucide="newspaper" style="color:var(--accent-light)"></i> Новости Обновлений</h2>
+            <button id="addNewsBtnMaster" class="btn btn-gold" style="display:none;" onclick="openModal('addNewsModal')">+ Добавить новость</button>
+          </div>
+          <div class="news-grid" id="newsContainer"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION 4: MAP -->
+    <div id="mapSection" class="page-section">
+      <section class="content-section">
+        <div class="card-box">
+          <h2><i data-lucide="map" style="color:var(--accent-light)"></i> Интерактивная Карта Мира</h2>
+          <p>Исследуйте рельеф, города резидентов и открытые железнодорожные пути прямо с сайта.</p>
+          <div class="map-wrapper" style="margin-top: 1.5rem;">
+            <div style="text-align:center; padding:2rem;">
+              <i data-lucide="compass" style="width:64px; height:64px; color:var(--accent-purple); margin-bottom:1rem;"></i>
+              <h3 style="font-family:var(--font-title); color:#fff; font-size:1.5rem;">3D-Карта Dynmap Загружается...</h3>
+              <p style="color:var(--text-muted); margin-top:0.5rem;">Подключение к серверам `map.spectrum-v2.ru`</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION 5: LORE -->
+    <div id="loreSection" class="page-section">
+      <section class="content-section">
+        <div style="display:flex; gap:1rem; margin-bottom:2rem; justify-content:center;">
+          <button class="btn btn-primary" id="btnServerLore" onclick="switchLoreSubTab('serverLore')">1) Лор Сервера</button>
+          <button class="btn btn-outline" id="btnPlayersLore" onclick="switchLoreSubTab('playersLore')">2) Лоры Игроков</button>
+        </div>
+
+        <div id="serverLoreBlock" class="card-box">
+          <h2><i data-lucide="book-open" style="color:var(--accent-light)"></i> Хроники Спектра: Лор Вселенной</h2>
+          <div id="serverLoreTextDisplay">
+            <p>Много веков назад мир существовал в привычной гармонии, пока в небесах не вспыхнул грандиозный <b>Аметистовый Разлом</b>. Аномальное небесное тело наполнило земли чистой магической энергией «Спектр».</p>
+            <p>Эта энергия изменила законы физики, открыв путь сложнейшим механизмам (мод <i>Create</i>) и богатым кулинарным традициям (мод <i>Farmer's Delight</i>).</p>
+          </div>
+        </div>
+
+        <div id="playersLoreBlock" class="card-box" style="display:none;">
+          <h2><i data-lucide="users" style="color:var(--accent-pink)"></i> Легенды и RP-Биографии Игроков</h2>
+          <p>Опубликованные истории персонажей нашего сообщества:</p>
+          <div id="publicPlayerBiographies" style="display:flex; flex-direction:column; gap:1rem; margin-top:1.5rem;"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION 6: RULES -->
+    <div id="rulesSection" class="page-section">
+      <section class="content-section">
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.2rem;">
+            <h2><i data-lucide="scale" style="color:var(--accent-light)"></i> Свод Правил Проекта</h2>
+            <div style="display:flex; gap:0.8rem;">
+              <button class="btn btn-primary" onclick="openModal('modListModal')"><i data-lucide="package" style="width:16px;"></i> Список Модов</button>
+              <button id="editRulesBtnStaff" class="btn btn-gold" style="display:none;" onclick="openModal('editRulesModal')"><i data-lucide="edit" style="width:16px;"></i> Редактировать правила</button>
+            </div>
+          </div>
+          <div id="rulesTextDisplay">
+            <p>Ознакомьтесь с основными нормами взаимодействия и ролевой игры на нашем сервере.</p>
+          </div>
+        </div>
+
+        <div class="rules-grid">
+          <div class="rule-card">
+            <h3><i data-lucide="shield-alert"></i> Ролевая игра & Атмосфера</h3>
+            <div id="ruleCardRpDisplay">
+              <ul>
+                <li><b>Имя персонажа:</b> Игровой никнейм должен быть эстетичным и RP-ориентированным.</li>
+                <li><b>Гриферство:</b> Бессмысленный вандализм и кражи без веской RP-причины запрещены.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="rule-card">
+            <h3><i data-lucide="cpu"></i> Технические нормы & Моды</h3>
+            <div id="ruleCardTechDisplay">
+              <ul>
+                <li><b>Оптимизация:</b> Лагающие механизмы без выключателей на Create запрещены.</li>
+                <li><b>Читы:</b> Использование X-Ray и стороннего софта строго под запретом.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="rules-banner" id="rulesBanner">
+          <label style="cursor:pointer; font-weight:700; font-size:1rem; display:flex; align-items:center; gap:0.6rem;">
+            <input type="checkbox" id="rulesCheckbox" onchange="toggleRulesAcceptance()" style="accent-color:var(--accent-purple); width:20px; height:20px;">
+            Я прочитал(а) лор, ознакомился с уставом и обязуюсь их соблюдать
+          </label>
+          <button class="btn btn-primary" id="startRegBtn" disabled onclick="openModal('regModal')">
+            Принять правила и Зарегистрироваться
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION 7: COMMUNITY -->
+    <div id="communitySection" class="page-section">
+      <section class="content-section">
+        <div class="community-grid">
+          <div class="comm-card">
+            <i data-lucide="send" style="width:42px; height:42px; color:var(--accent-light)"></i>
+            <h3 style="font-family:var(--font-title);">Telegram-канал</h3>
+            <p style="color:var(--text-muted); font-size:0.92rem;">Главные новости, анонсы ивентов и лор.</p>
+            <a href="https://t.me/spectrum_smp" id="tgChannelLinkBtn" target="_blank" class="btn btn-primary">Перейти в ТГК</a>
+          </div>
+          <div class="comm-card locked" id="tgChatCard">
+            <i data-lucide="message-circle" style="width:42px; height:42px; color:var(--accent-pink)"></i>
+            <h3 style="font-family:var(--font-title);">Закрытый Чат ТГ</h3>
+            <p style="color:var(--text-muted); font-size:0.92rem;">Общение резидентов после прохождения анкеты.</p>
+            <a href="https://t.me/spectrum_private" id="tgChatLink" target="_blank" class="btn btn-outline" style="pointer-events:none; opacity:0.6;"><i data-lucide="lock"></i> Заблокировано</a>
+          </div>
+          <div class="comm-card locked" id="discordCard">
+            <i data-lucide="disc" style="width:42px; height:42px; color:var(--accent-blue)"></i>
+            <h3 style="font-family:var(--font-title);">Discord Сервер</h3>
+            <p style="color:var(--text-muted); font-size:0.92rem;">Голосовые каналы и техподдержка для участников.</p>
+            <a href="https://discord.gg/spectrum" id="discordLink" target="_blank" class="btn btn-outline" style="pointer-events:none; opacity:0.6;"><i data-lucide="lock"></i> Заблокировано</a>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <h2><i data-lucide="users" style="color:var(--accent-pink)"></i> Список Резидентов & Фракций</h2>
+          <p>Нажмите на любого игрока для просмотра его публичного профиля.</p>
+          <div style="overflow-x: auto; margin-top: 1.5rem;">
+            <table class="players-table">
+              <thead>
+                <tr>
+                  <th>Игрок</th>
+                  <th>Статус / Фракция</th>
+                  <th>Роль</th>
+                  <th>Квента / Биография</th>
+                </tr>
+              </thead>
+              <tbody id="communityPlayersTableList"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- SECTION 8: PROFILE -->
+    <div id="cabinetSection" class="page-section">
+      <section class="content-section">
+        <div class="card-box">
+          <h2><i data-lucide="user-check" style="color:var(--accent-light)"></i> Профиль Игрока</h2>
+          <p>Управляйте своим профилем, загружайте скин и пишите RP-биографию.</p>
+
+          <div id="cabinetGuestNotice" style="display:none; text-align:center; padding:2rem;">
+            <p style="color:var(--accent-pink); font-size:1.2rem; font-weight:800;">Вы не авторизованы!</p>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem;">Войдите или зарегистрируйтесь для доступа к профилю.</p>
+            <button class="btn btn-primary" onclick="openModal('loginModal')">Войти в аккаунт</button>
+          </div>
+
+          <div id="cabinetUserBody" class="cabinet-grid" style="display:none; margin-top:2rem;">
+            <div class="cabinet-sidebar">
+              <div class="skin-render-box">
+                <img id="cabSkinImg" src="https://mc-heads.net/body/Steve" alt="Skin Render">
+              </div>
+              <h3 id="cabNickText" style="color:#fff; font-family:var(--font-title); font-size:1.4rem;">Steve</h3>
+              <p id="cabRoleText" style="color:var(--accent-light); font-size:0.85rem; font-weight:800; text-transform:uppercase;">РЕЗИДЕНТ</p>
+
+              <label for="cabAvatarInput" class="btn btn-outline" style="font-size:0.8rem; width:100%; cursor:pointer;">
+                <i data-lucide="upload" style="width:14px;"></i> Своя аватарка
+              </label>
+              <input type="file" id="cabAvatarInput" accept="image/*" style="display:none;" onchange="handleAvatarUpload(event)">
+
+              <div style="width:100%; margin-top:0.5rem;">
+                <input type="text" id="cabSkinNickInput" class="form-control" style="font-size:0.8rem; text-align:center;" placeholder="Ник для Скина Minecraft">
+                <button class="btn btn-outline" style="font-size:0.75rem; width:100%; margin-top:0.4rem; padding:0.4rem;" onclick="updateSkinNick()">Применить скин</button>
+              </div>
+
+              <button class="btn btn-primary" style="font-size:0.8rem; width:100%; margin-top:0.5rem;" onclick="openModal('bioModal')">
+                <i data-lucide="feather" style="width:14px;"></i> + Написать RP-биографию
+              </button>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:1.2rem;">
+              <div class="form-group"><label>Никнейм в Minecraft</label><input type="text" id="cabInputNick" class="form-control" readonly></div>
+              <div class="form-group"><label>Email аккаунта</label><input type="email" id="cabInputEmail" class="form-control" readonly></div>
+              <div class="form-group"><label>Фракция / Статус</label><input type="text" id="cabInputFaction" class="form-control" readonly style="color:var(--accent-pink); font-weight:bold;"></div>
+              <div class="form-group"><label>Статус whitelist</label><input type="text" id="cabInputStatus" class="form-control" readonly style="color:var(--accent-emerald); font-weight:bold;"></div>
+
+              <div style="border-top:1px dashed var(--border-color); padding-top:1rem; margin-top:0.5rem;">
+                <h4 style="color:#fff; font-size:1.1rem; margin-bottom:1rem;">Мои RP-Биографии</h4>
+                <div id="userOwnBiosList" style="display:flex; flex-direction:column; gap:0.8rem;"></div>
+              </div>
+
+              <div style="margin-top:1.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
+                <button onclick="logout()" class="btn btn-outline"><i data-lucide="log-out" style="width:16px;"></i> Выйти</button>
+                <button onclick="deleteAccount()" class="btn btn-danger"><i data-lucide="trash-2" style="width:16px;"></i> Удалить профиль</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer><p>© 2026 Spectrum V2. Эпический RP SMP Сервер Minecraft.</p></footer>
+  </div>
+
+  <!-- ===================== MODALS ===================== -->
+
+  <div class="modal-overlay" id="modListModal">
+    <div class="modal" style="max-width: 800px;">
+      <button class="modal-close" onclick="closeModal('modListModal')"><i data-lucide="x"></i></button>
+      <h2 style="color:var(--accent-light); font-family:var(--font-title);"><i data-lucide="package"></i> Официальный Список Модов Spectrum V2</h2>
+      <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem;">Полный перечень технических, декоративных и RP-модификаций нашего сервера.</p>
+      <div id="modListDisplay" style="max-height:60vh; overflow-y:auto; padding-right:0.5rem; line-height:1.7;"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="editRulesModal">
+    <div class="modal" style="max-width: 800px;">
+      <button class="modal-close" onclick="closeModal('editRulesModal')"><i data-lucide="x"></i></button>
+      <h2 style="color:var(--accent-gold); font-family:var(--font-title);"><i data-lucide="edit"></i> Редактирование Правил Проекта</h2>
+      <form onsubmit="saveDirectRules(event)" style="margin-top:1.5rem;">
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>Вводная часть / Заголовок</label>
+            <button type="button" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="insertImgPrompt('ruleInputHeader')">🖼️ Картинка</button>
+          </div>
+          <textarea id="ruleInputHeader" class="form-control" rows="2" required></textarea>
+        </div>
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>1) Ролевая игра & Атмосфера</label>
+            <button type="button" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="insertImgPrompt('ruleInputRp')">🖼️ Картинка</button>
+          </div>
+          <textarea id="ruleInputRp" class="form-control" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>2) Технические нормы & Моды</label>
+            <button type="button" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="insertImgPrompt('ruleInputTech')">🖼️ Картинка</button>
+          </div>
+          <textarea id="ruleInputTech" class="form-control" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-gold" style="width:100%;">Сохранить правила</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="publicProfileModal">
+    <div class="modal" style="text-align: center;">
+      <button class="modal-close" onclick="closeModal('publicProfileModal')"><i data-lucide="x"></i></button>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:1rem;">
+        <img id="pubProfAvatar" src="https://mc-heads.net/avatar/Steve" style="width:80px; height:80px; border-radius:50%; border:2px solid var(--accent-purple); box-shadow:0 0 20px rgba(168, 85, 247, 0.5);" alt="Avatar">
+        <h2 id="pubProfNick" style="font-family:var(--font-title); color:#fff; font-size:1.8rem;">Steve</h2>
+        <span id="pubProfFaction" style="background:rgba(168, 85, 247, 0.2); border:1px solid var(--accent-purple); color:var(--accent-light); padding:0.3rem 0.9rem; border-radius:20px; font-weight:800; font-size:0.85rem;">Резидент</span>
+        <div class="skin-render-box" style="margin-top:1rem;">
+          <img id="pubProfSkin" src="https://mc-heads.net/body/Steve" alt="Skin">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="bioModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('bioModal')"><i data-lucide="x"></i></button>
+      <h2 style="font-family:var(--font-title);">Публикация RP-биографии</h2>
+      <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1rem;">Созданная биография выйдет в общий раздел "Лоры Игроков".</p>
+      <form onsubmit="handleBioSubmit(event)">
+        <div class="form-group"><label>Имя персонажа</label><input type="text" id="bioCharName" class="form-control" required placeholder="Эдвард Ван Хольт"></div>
+        <div class="form-group"><label>Возраст & Профессия</label><input type="text" id="bioCharRole" class="form-control" required placeholder="28 лет, Мастер-Инженер Create"></div>
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>Текст RP-Биографии</label>
+            <button type="button" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="insertImgPrompt('bioText')">🖼️ Вставить картинку</button>
+          </div>
+          <textarea id="bioText" class="form-control" rows="5" required placeholder="Опишите историю происхождения, черты характера и цель прибытия в мир Спектра..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Опубликовать биографию</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="masterAdminModal">
+    <div class="modal" style="max-width: 950px;">
+      <button class="modal-close" onclick="closeModal('masterAdminModal')"><i data-lucide="x"></i></button>
+      <h2 style="color:var(--accent-gold); font-family:var(--font-title);"><i data-lucide="crown"></i> Мастер Панель Администратора</h2>
+      <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:1.5rem;">Управление контентом, ролями администраторов, ссылками, списком модов и фракциями.</p>
+
+      <form onsubmit="saveMasterSettings(event)">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div class="form-group"><label>Ссылка на ТГ Канал</label><input type="text" id="masterTgChan" class="form-control" required></div>
+          <div class="form-group"><label>Ссылка на Закрытый ТГ Чат</label><input type="text" id="masterTgChat" class="form-control" required></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div class="form-group"><label>Ссылка на Discord</label><input type="text" id="masterDiscord" class="form-control" required></div>
+          <div class="form-group"><label>Ссылка на Сборку (Google Диск)</label><input type="text" id="masterModpack" class="form-control" required></div>
+        </div>
+        <div class="form-group"><label>Ссылка на заявки фракций (ТГ)</label><input type="text" id="masterFactionApply" class="form-control" required></div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>Содержимое «Списка Модов»</label>
+            <button type="button" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="insertImgPrompt('masterModListText')">🖼️ Вставить картинку</button>
+          </div>
+          <textarea id="masterModListText" class="form-control" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>Лор Сервера</label>
+            <button type="button" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="insertImgPrompt('masterServerLore')">🖼️ Вставить картинку</button>
+          </div>
+          <textarea id="masterServerLore" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>Описание в Гайде по входу</label>
+            <button type="button" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="insertImgPrompt('masterGuideDesc')">🖼️ Вставить картинку</button>
+          </div>
+          <textarea id="masterGuideDesc" class="form-control" rows="2" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-gold" style="width:100%;">Сохранить настройки проекта</button>
+      </form>
+
+      <div id="masterAdminRolesSection" style="border-top:1px dashed var(--accent-gold); margin-top:2rem; padding-top:1.5rem; display:none;">
+        <h3 style="color:var(--accent-gold); font-family:var(--font-title); margin-bottom:1rem;">Управление Администрацией Проекта</h3>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead><tr><th>Ник</th><th>Email</th><th>Текущая Роль</th><th>Назначить Роль</th></tr></thead>
+            <tbody id="masterAdminRolesList"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="border-top:1px dashed var(--accent-gold); margin-top:2rem; padding-top:1.5rem;">
+        <h3 style="color:var(--accent-gold); font-family:var(--font-title); margin-bottom:1rem;">Управление Фракциями & Статусами Игроков</h3>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead><tr><th>Ник</th><th>Email</th><th>Текущая Фракция / Статус</th><th>Изменить Фракцию</th></tr></thead>
+            <tbody id="masterPlayerFactionsList"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="addNewsModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('addNewsModal')"><i data-lucide="x"></i></button>
+      <h2 style="font-family:var(--font-title);">Опубликовать Новость</h2>
+      <form onsubmit="handleAddNews(event)" style="margin-top:1.5rem;">
+        <div class="form-group"><label>Заголовок новости</label><input type="text" id="newsTitle" class="form-control" required placeholder="Обновление Create v2"></div>
+        <div class="form-group"><label>Ссылка на обложку (URL)</label><input type="url" id="newsImg" class="form-control" required placeholder="https://images.unsplash.com/..."></div>
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>Текст новости</label>
+            <button type="button" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.75rem;" onclick="insertImgPrompt('newsContent')">🖼️ Вставить картинку</button>
+          </div>
+          <textarea id="newsContent" class="form-control" rows="4" required placeholder="Описание нововведений..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Опубликовать новость</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('loginModal')"><i data-lucide="x"></i></button>
+      <h2 style="font-family:var(--font-title);">Вход в Личный Кабинет</h2>
+      <form onsubmit="handleLogin(event)" style="margin-top:1.5rem;">
+        <div class="form-group"><label>Email</label><input type="email" id="loginEmail" class="form-control" required placeholder="your@email.com"></div>
+        <div class="form-group"><label>Пароль</label><input type="password" id="loginPass" class="form-control" required placeholder="••••••••"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Войти</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="regModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('regModal')"><i data-lucide="x"></i></button>
+      <h2 style="font-family:var(--font-title);">Регистрация Аккаунта</h2>
+      <form onsubmit="handleRegister(event)" style="margin-top:1.5rem;">
+        <div class="form-group"><label>Никнейм в Minecraft</label><input type="text" id="regNick" class="form-control" required placeholder="Steve_Craft"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="regEmail" class="form-control" required placeholder="your@email.com"></div>
+        <div class="form-group"><label>Пароль</label><input type="password" id="regPass" class="form-control" required placeholder="••••••••"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Создать аккаунт</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="wlModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('wlModal')"><i data-lucide="x"></i></button>
+      <h2 style="font-family:var(--font-title);">Расширенная Анкета (Whitelist)</h2>
+      <form onsubmit="handleWhitelistSubmit(event)" style="margin-top:1.5rem;">
+        <div class="form-group"><label>Ваш возраст</label><input type="number" id="wlAge" class="form-control" required placeholder="16"></div>
+        <div class="form-group"><label>Ваш опыт в RolePlay (RP)</label><select id="wlRpExp" class="form-control"><option>Новичок</option><option>Средний опыт</option><option>Опытный ролевик</option></select></div>
+        <div class="form-group"><label>История персонажа и квента</label><textarea id="wlLore" class="form-control" rows="3" required placeholder="Кем ваш персонаж прибыл в этот мир?"></textarea></div>
+        <div class="form-group"><label>Планы на сервере</label><textarea id="wlPlans" class="form-control" rows="2" required placeholder="Инженерия, строительство, торговля..."></textarea></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Отправить анкету</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal" style="max-width: 950px;">
+      <button class="modal-close" onclick="closeModal('adminModal')"><i data-lucide="x"></i></button>
+      <h2 style="color:var(--accent-light); font-family:var(--font-title);">🛡️ Панель Модерации Заявок Spectrum V2</h2>
+      <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;">Проверка и фильтрация поступающих анкет игроков.</p>
+      <div style="overflow-x: auto;">
+        <table class="admin-table">
+          <thead><tr><th>Ник</th><th>Email</th><th>Возраст</th><th>RP Опыт</th><th>История & Планы</th><th>Статус</th><th>Действия</th></tr></thead>
+          <tbody id="adminAppsList"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"><span id="toastMsg">Уведомление</span></div>
+
+  <!-- JS (порядок важен!) -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/community.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
