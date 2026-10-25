@@ -110,9 +110,11 @@ async function saveMasterSettings(e) {
       factionApply: document.getElementById('masterFactionApply').value,
       modListText: document.getElementById('masterModListText').value,
       serverLore: document.getElementById('masterServerLore').value,
-      guideDesc: document.getElementById('masterGuideDesc').value
+      guideDesc: document.getElementById('masterGuideDesc').value,
+      donateGoal: parseInt(document.getElementById('masterDonGoal').value) || 0,
+      donateCurrent: parseInt(document.getElementById('masterDonCurrent').value) || 0,
+      donateDate: document.getElementById('masterDonDate').value
     }, { merge: true });
-
     closeModal('masterAdminModal');
     showToast('Настройки проекта обновлены!');
     loadGlobalSettings();
