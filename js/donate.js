@@ -1,5 +1,4 @@
 // Логика донат-бара
-// Логика донат-бара
 async function loadDonateSettings() {
   try {
     const doc = await db.collection('settings').doc('global').get();
