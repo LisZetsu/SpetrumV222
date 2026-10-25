@@ -15,7 +15,7 @@ async function loadGlobalSettings() {
       if (data.guideDesc)    document.getElementById('guideDisplayDesc').innerHTML = data.guideDesc;
 
       if (data.modListText) {
-        document.getElementById('modListDisplay').innerHTML = data.modListText;
+        document.getElementById('modListDisplay').innerHTML = data.modListText.replace(/\n/g, '<br>');
       } else {
         document.getElementById('modListDisplay').innerHTML = `
           <p>• <b>Create v0.5.1</b> — Базовый инженерный мод, конвейеры, шестерни и поезда.</p>
