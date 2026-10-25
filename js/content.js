@@ -11,8 +11,8 @@ async function loadGlobalSettings() {
       if (data.discord)      document.getElementById('discordLink').href = data.discord;
       if (data.modpack)      document.getElementById('modpackGuideBtn').href = data.modpack;
       if (data.factionApply) document.getElementById('factionApplyLinkBtn').href = data.factionApply;
-      if (data.serverLore)   document.getElementById('serverLoreTextDisplay').innerHTML = data.serverLore;
-      if (data.guideDesc)    document.getElementById('guideDisplayDesc').innerHTML = data.guideDesc;
+      if (data.serverLore)   document.getElementById('serverLoreTextDisplay').innerHTML = data.serverLore.replace(/\n/g, '<br>');
+      if (data.guideDesc)    document.getElementById('guideDisplayDesc').innerHTML = data.guideDesc.replace(/\n/g, '<br>');
 
       if (data.modListText) {
         document.getElementById('modListDisplay').innerHTML = data.modListText.replace(/\n/g, '<br>');
