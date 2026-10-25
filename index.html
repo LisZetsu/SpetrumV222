@@ -125,13 +125,42 @@
         </div>
       </div>
 
+            <!-- Photo Showcase Grid -->
       <div class="gallery-section">
-        <div class="gallery-grid">
-          <div class="gallery-item"><img src="assets/img/gallery1.jpg" alt="RP Scene"></div>
-          <div class="gallery-item"><img src="assets/img/gallery2.jpg" alt="RP Scene"></div>
-          <div class="gallery-item gallery-large"><img src="assets/img/gallery3.jpg" alt="Tavern RP"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <h2 style="font-family:var(--font-title); color:#fff; font-size:2rem;">Фотогалерея</h2>
+          <button id="addGalleryBtnMaster" class="btn btn-gold" style="display:none;" onclick="openModal('addGalleryModal')">+ Добавить фото</button>
+        </div>
+        <div class="gallery-grid" id="mainGalleryGrid">
+          <!-- Загружается из Firebase -->
         </div>
       </div>
+
+      <!-- DONATION / THANKS SECTION -->
+      <section class="content-section">
+        <div class="card-box" style="border-color: var(--accent-emerald); background: linear-gradient(135deg, rgba(10, 30, 20, 0.8), rgba(14, 10, 28, 0.95));">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+            <h2 style="color:var(--accent-emerald);"><i data-lucide="heart-handshake" style="color:var(--accent-emerald)"></i> Благодарность & Донат</h2>
+            <button id="addDonationBtnMaster" class="btn btn-gold" style="display:none;" onclick="openModal('addDonationModal')">+ Добавить запись</button>
+          </div>
+          
+          <div style="display:grid; grid-template-columns: 200px 1fr; gap:2rem; align-items:center; margin-bottom:2rem;">
+            <div style="display:flex; justify-content:center;">
+              <div id="donateCircle" style="width:160px; height:160px; border-radius:50%; background:conic-gradient(var(--accent-emerald) 0%, rgba(255,255,255,0.1) 0%); display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(16,185,129,0.3);">
+                <div class="donate-inner" style="width:130px; height:130px; background:#0e0a1c; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1.5rem; color:#fff;">0%</div>
+              </div>
+            </div>
+            <div>
+              <h3 style="color:#fff; font-family:var(--font-title); margin-bottom:0.5rem; font-size:1.5rem;">Сбор на хостинг сервера</h3>
+              <p style="color:var(--text-muted); font-size:1rem; margin-bottom:1rem;">Собрано: <b id="donateTextCurrent" style="color:var(--accent-emerald); font-size:1.2rem;">0 ₽</b> из <b id="donateTextGoal" style="color:#fff;">0 ₽</b></p>
+              <p style="color:var(--accent-gold); font-weight:bold; font-size:0.9rem;">Цель должна быть достигнута до: <span id="donateTextDate">Не указана</span></p>
+            </div>
+          </div>
+
+          <h4 style="color:#fff; margin-bottom:1rem; border-top:1px dashed var(--border-color); padding-top:1rem;">Наши спонсоры:</h4>
+          <div id="donateListContainer"></div>
+        </div>
+      </section>
 
       <section class="content-section">
         <div class="card-box" style="border-color: var(--accent-gold); background: linear-gradient(135deg, rgba(35, 25, 10, 0.85), rgba(14, 10, 28, 0.95));">
@@ -540,7 +569,11 @@
           </div>
           <textarea id="masterGuideDesc" class="form-control" rows="2" required></textarea>
         </div>
-
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; border-top:1px dashed var(--accent-gold); padding-top:1rem; margin-top:1rem;">
+          <div class="form-group"><label>Цель сбора (₽)</label><input type="number" id="masterDonGoal" class="form-control" required></div>
+          <div class="form-group"><label>Собрано сейчас (₽)</label><input type="number" id="masterDonCurrent" class="form-control" required></div>
+          <div class="form-group"><label>Дата конца сбора</label><input type="text" id="masterDonDate" class="form-control" required placeholder="31.12.2026"></div>
+        </div>
         <button type="submit" class="btn btn-gold" style="width:100%;">Сохранить настройки проекта</button>
       </form>
 
@@ -637,16 +670,54 @@
       </div>
     </div>
   </div>
+  <!-- Модалка: Добавить фото в галерею -->
+  <div class="modal-overlay" id="addGalleryModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('addGalleryModal')"><i data-lucide="x"></i></button>
+      <h2 style="font-family:var(--font-title);">Добавить фото в галерею</h2>
+      <form onsubmit="handleGalleryUpload(event)" style="margin-top:1.5rem;">
+        <div class="form-group">
+          <label>Ссылка на картинку (URL)</label>
+          <input type="url" id="galleryUrlInput" class="form-control" required placeholder="https://i.imgur.com/вашакартинка.jpg">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Добавить в галерею</button>
+      </form>
+    </div>
+  </div>
 
+  <!-- Модалка: Добавить благодарность -->
+  <div class="modal-overlay" id="addDonationModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('addDonationModal')"><i data-lucide="x"></i></button>
+      <h2 style="font-family:var(--font-title); color:var(--accent-emerald);">Добавить благодарность</h2>
+      <form onsubmit="handleAddDonation(event)" style="margin-top:1.5rem;">
+        <div class="form-group"><label>Ник того, кто задонатил</label><input type="text" id="donNick" class="form-control" required placeholder="Steve"></div>
+        <div class="form-group"><label>Сумма (в рублях)</label><input type="number" id="donAmount" class="form-control" required placeholder="500"></div>
+        <div class="form-group"><label>Текст благодарности (сообщение)</label><textarea id="donMsg" class="form-control" rows="3" required placeholder="Спасибо за поддержку проекта!"></textarea></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Сохранить</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модалка: Лайтбокс (просмотр фото) -->
+  <div class="modal-overlay" id="lightboxModal" style="background:rgba(0,0,0,0.95);">
+    <button class="modal-close" style="top:2rem; right:2rem; color:#fff;" onclick="closeLightbox()"><i data-lucide="x" style="width:32px; height:32px;"></i></button>
+    <button onclick="changeLightbox(-1)" style="position:absolute; left:2rem; background:transparent; border:none; color:#fff; cursor:pointer; padding:1rem;"><i data-lucide="chevron-left" style="width:48px; height:48px;"></i></button>
+    <img id="lightboxImg" src="" style="max-width:90%; max-height:90vh; border-radius:12px; box-shadow:0 0 50px rgba(168,85,247,0.3);">
+    <button onclick="changeLightbox(1)" style="position:absolute; right:2rem; background:transparent; border:none; color:#fff; cursor:pointer; padding:1rem;"><i data-lucide="chevron-right" style="width:48px; height:48px;"></i></button>
+  </div>
+  
   <div class="toast" id="toast"><span id="toastMsg">Уведомление</span></div>
 
-  <!-- JS (порядок важен!) -->
+    <!-- JS (порядок важен!) -->
   <script src="js/firebase-config.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/particles.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/content.js"></script>
+  <script src="js/donate.js"></script>
+  <script src="js/gallery.js"></script>
   <script src="js/community.js"></script>
   <script src="js/admin.js"></script>
   <script src="js/main.js"></script>
