@@ -12,3 +12,6 @@ checkUserState();
 loadPublicBiographies();
 loadNews();
 loadCommunityPlayers();
+if (typeof loadDonateSettings === 'function') loadDonateSettings();
+if (typeof loadDonations === 'function') loadDonations();
+if (typeof loadGallery === 'function') loadGallery();
