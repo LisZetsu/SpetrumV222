@@ -102,23 +102,32 @@ async function saveUserFaction(email, inputId) {
 async function saveMasterSettings(e) {
   e.preventDefault();
   try {
-    await db.collection('settings').doc('global').set({
-      tgChannel: document.getElementById('masterTgChan').value,
-      tgChat: document.getElementById('masterTgChat').value,
-      discord: document.getElementById('masterDiscord').value,
-      modpack: document.getElementById('masterModpack').value,
-      factionApply: document.getElementById('masterFactionApply').value,
-      modListText: document.getElementById('masterModListText').value,
-      serverLore: document.getElementById('masterServerLore').value,
-      guideDesc: document.getElementById('masterGuideDesc').value,
-      donateGoal: parseInt(document.getElementById('masterDonGoal').value) || 0,
-      donateCurrent: parseInt(document.getElementById('masterDonCurrent').value) || 0,
-      donateDate: document.getElementById('masterDonDate').value
-    }, { merge: true });
+    // Собираем данные, проверяя, существует ли поле (чтобы не было ошибок)
+    const dataToSave = {
+      tgChannel: document.getElementById('masterTgChan')?.value || '',
+      tgChat: document.getElementById('masterTgChat')?.value || '',
+      discord: document.getElementById('masterDiscord')?.value || '',
+      modpack: document.getElementById('masterModpack')?.value || '',
+      factionApply: document.getElementById('masterFactionApply')?.value || '',
+      modListText: document.getElementById('masterModListText')?.value || '',
+      serverLore: document.getElementById('masterServerLore')?.value || '',
+      guideDesc: document.getElementById('masterGuideDesc')?.value || '',
+      donateGoal: parseInt(document.getElementById('masterDonGoal')?.value) || 0,
+      donateCurrent: parseInt(document.getElementById('masterDonCurrent')?.value) || 0,
+      donateDate: document.getElementById('masterDonDate')?.value || ''
+    };
+
+    // Сохраняем в базу
+    await db.collection('settings').doc('global').set(dataToSave, { merge: true });
+    
     closeModal('masterAdminModal');
-    showToast('Настройки проекта обновлены!');
+    showToast('Все настройки успешно сохранены!');
+    
+    // Обновляем данные на странице
     loadGlobalSettings();
+    if (typeof loadDonateSettings === 'function') loadDonateSettings();
   } catch (err) {
+    console.error(err);
     showToast('Ошибка сохранения: ' + err.message);
   }
 }
