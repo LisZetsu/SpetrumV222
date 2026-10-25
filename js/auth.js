@@ -124,13 +124,13 @@ async function checkUserState() {
     headerHtml += `<button class="btn btn-outline" style="border-color:var(--accent-gold); color:var(--accent-gold); padding:0.45rem 0.8rem; font-size:0.85rem;" onclick="openModal('adminModal')">🛡️ Заявки</button>`;
   }
   document.getElementById('userHeaderBlock').innerHTML = headerHtml;
-  document.getElementById('addGalleryBtnMaster').style.display = 'block';
-  document.getElementById('addDonationBtnMaster').style.display = 'block';
   
   if (isOwner || isDeputy || isTechAdmin) {
     document.getElementById('masterNavBtn').style.display = 'flex';
     document.getElementById('addNewsBtnMaster').style.display = 'block';
     document.getElementById('editRulesBtnStaff').style.display = 'block';
+    document.getElementById('addGalleryBtnMaster').style.display = 'block';
+    document.getElementById('addDonationBtnMaster').style.display = 'block';
   }
 
   if (isOwner) {
