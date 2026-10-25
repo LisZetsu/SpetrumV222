@@ -11,6 +11,7 @@ async function loadGlobalSettings() {
       if (data.discord)      document.getElementById('discordLink').href = data.discord;
       if (data.modpack)      document.getElementById('modpackGuideBtn').href = data.modpack;
       if (data.factionApply) document.getElementById('factionApplyLinkBtn').href = data.factionApply;
+      
       if (data.serverLore)   document.getElementById('serverLoreTextDisplay').innerHTML = data.serverLore.replace(/\n/g, '<br>');
       if (data.guideDesc)    document.getElementById('guideDisplayDesc').innerHTML = data.guideDesc.replace(/\n/g, '<br>');
 
@@ -25,17 +26,13 @@ async function loadGlobalSettings() {
         `;
       }
 
-      if (data.rulesHeader) document.getElementById('rulesTextDisplay').innerHTML = data.rulesHeader;
-      if (data.rulesRp)     document.getElementById('ruleCardRpDisplay').innerHTML = data.rulesRp;
-      if (data.rulesTech)   document.getElementById('ruleCardTechDisplay').innerHTML = data.rulesTech;
-      if (data.rulesHeader) document.getElementById('rulesTextDisplay').innerHTML = data.rulesHeader;
-      if (data.rulesRp)     document.getElementById('ruleCardRpDisplay').innerHTML = data.rulesRp;
-      if (data.rulesTech)   document.getElementById('ruleCardTechDisplay').innerHTML = data.rulesTech;
+      if (data.rulesHeader) document.getElementById('rulesTextDisplay').innerHTML = data.rulesHeader.replace(/\n/g, '<br>');
+      if (data.rulesRp)     document.getElementById('ruleCardRpDisplay').innerHTML = data.rulesRp.replace(/\n/g, '<br>');
+      if (data.rulesTech)   document.getElementById('ruleCardTechDisplay').innerHTML = data.rulesTech.replace(/\n/g, '<br>');
 
       if (data.donateGoal) document.getElementById('masterDonGoal').value = data.donateGoal;
       if (data.donateCurrent) document.getElementById('masterDonCurrent').value = data.donateCurrent;
       if (data.donateDate) document.getElementById('masterDonDate').value = data.donateDate;
-    }
     }
   } catch (err) {
     console.log('Error loading settings:', err);
@@ -98,7 +95,7 @@ async function loadNews() {
           <img src="${n.img}" class="news-card-img" alt="News">
           <div class="news-date">${n.date}</div>
           <h3>${n.title}</h3>
-          <div style="color:var(--text-muted); font-size:0.95rem;">${n.content}</div>
+          <div style="color:var(--text-muted); font-size:0.95rem;">${n.content.replace(/\n/g, '<br>')}</div>
           ${isMaster ? `<button class="btn btn-danger" style="padding:0.2rem 0.5rem; font-size:0.7rem; margin-top:0.5rem;" onclick="deleteNews('${doc.id}')">Удалить новость</button>` : ''}
         </div>
       `;
