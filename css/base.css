@@ -1,0 +1,96 @@
+/* ============ Переменные, ресет, тело, шрифты, кнопки, формы ============ */
+:root {
+  --bg-dark: #080612;
+  --bg-card: rgba(22, 16, 42, 0.85);
+  --bg-card-hover: rgba(38, 26, 70, 0.95);
+  --border-color: rgba(168, 85, 247, 0.3);
+  --border-glow: rgba(192, 132, 252, 0.6);
+
+  --accent-purple: #a855f7;
+  --accent-light: #c084fc;
+  --accent-pink: #e879f9;
+  --accent-gold: #fbbf24;
+  --accent-emerald: #10b981;
+  --accent-red: #ef4444;
+  --accent-blue: #3b82f6;
+
+  --text-main: #f3e8ff;
+  --text-muted: #a78bfa;
+
+  --font-title: 'Cinzel', 'Marcellus', serif;
+  --font-body: 'Nunito', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  position: relative;
+}
+
+/* Прелоадер */
+#preloader {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: #04020a; z-index: 9999; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 1.5rem;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+#preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.loader-crystal {
+  width: 70px; height: 70px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+  border-radius: 20px; animation: crystalSpin 2s infinite ease-in-out;
+  box-shadow: 0 0 35px rgba(168, 85, 247, 0.8); display: flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+@keyframes crystalSpin {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.2); box-shadow: 0 0 50px rgba(232, 121, 249, 1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.loader-title {
+  font-family: var(--font-title); font-size: 2.2rem; font-weight: 900; letter-spacing: 4px;
+  background: linear-gradient(135deg, #ffffff, var(--accent-light), var(--accent-pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+#bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+.app-layer { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+/* Кнопки */
+.btn {
+  padding: 0.65rem 1.4rem; border-radius: 12px; font-weight: 800; cursor: pointer;
+  transition: all 0.35s ease; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+  text-decoration: none; font-size: 0.88rem;
+  position: relative; overflow: hidden; z-index: 1; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.btn-gold {
+  background: linear-gradient(135deg, #fbbf24, #d97706); color: #000;
+  box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4); font-weight: 900;
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(251, 191, 36, 0.7); }
+
+.btn-primary {
+  background: linear-gradient(135deg, #9333ea, #6d28d9, #4c1d95); color: #fff;
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.4); border: 1px solid rgba(216, 180, 254, 0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(168, 85, 247, 0.7); border-color: var(--accent-light); }
+.btn-outline { background: rgba(20, 14, 38, 0.6); border: 1px solid var(--border-color); color: var(--text-main); }
+.btn-outline:hover { background: rgba(168, 85, 247, 0.2); border-color: var(--accent-light); transform: translateY(-2px); }
+.btn-discord { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4); }
+.btn-danger  { background: linear-gradient(135deg, #dc2626, #991b1b); color: #fff; }
+
+/* Формы */
+.form-group { margin-bottom: 1.4rem; }
+.form-group label { display: block; font-size: 0.9rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-muted); text-transform: uppercase; }
+.form-control {
+  width: 100%; padding: 0.9rem 1.2rem; background: rgba(6, 4, 13, 0.8);
+  border: 1px solid var(--border-color); border-radius: 12px; color: #fff;
+  font-family: inherit; font-size: 1rem;
+}
