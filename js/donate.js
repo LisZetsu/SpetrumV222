@@ -1,11 +1,14 @@
 // Логика донат-бара
+// Логика донат-бара
 async function loadDonateSettings() {
   try {
     const doc = await db.collection('settings').doc('global').get();
     if (doc.exists) {
       const data = doc.data();
-      const goal = data.donateGoal || 50000;
-      const current = data.donateCurrent || 0;
+      
+      // Безопасное получение чисел (даже если Firebase отдал их в формате int64)
+      const goal = Number(data.donateGoal) || 50000;
+      const current = Number(data.donateCurrent) || 0;
       const date = data.donateDate || '31.12.2026';
       
       const percent = Math.min((current / goal) * 100, 100);
