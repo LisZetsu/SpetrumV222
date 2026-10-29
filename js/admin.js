@@ -80,10 +80,7 @@ async function populateMasterModal() {
     `;
   });
   fTable.innerHTML = fHtml;
-} else {
-    adminRolesSec.style.display = 'none';
-  }
-
+}
   const usersSnap = await db.collection('users').get();
   const fTable = document.getElementById('masterPlayerFactionsList');
   let fHtml = '';
