@@ -66,44 +66,71 @@ async function handleAddDonation(e) {
   const amount = parseInt(document.getElementById('donAmount').value);
   const message = document.getElementById('donMsg').value.trim();
 
+  if (!amount || amount <= 0) {
+    showToast('Введите корректную сумму!');
+    return;
+  }
+
   try {
+    // 1. Добавляем запись в коллекцию donations
     await db.collection('donations').add({
       nick, amount, message,
       createdAt: new Date().toISOString()
     });
+
+    // 2. Автоматически увеличиваем общую сумму в настройках
+    const settingsRef = db.collection('settings').doc('global');
+    const settingsDoc = await settingsRef.get();
+    const currentTotal = settingsDoc.exists ? (Number(settingsDoc.data().donateCurrent) || 0) : 0;
+    
+    await settingsRef.set({
+      donateCurrent: currentTotal + amount
+    }, { merge: true });
+
     closeModal('addDonationModal');
-    showToast('Благодарность добавлена!');
+    showToast('Благодарность добавлена, прогресс обновлен!');
+    
+    // 3. Обновляем визуал (список и полосу прогресса)
     loadDonations();
+    loadDonateSettings();
+    
+    // 4. Очищаем форму для следующего ввода
+    document.getElementById('donNick').value = '';
+    document.getElementById('donAmount').value = '';
+    document.getElementById('donMsg').value = '';
   } catch(err) {
     showToast('Ошибка: ' + err.message);
   }
 }
 
 async function deleteDonation(id) {
-  if(!confirm('Удалить эту запись?')) return;
+  if(!confirm('Удалить эту запись? Сумма сбора также уменьшится.')) return;
+  
   try {
-    await db.collection('donations').doc(id).delete();
-    showToast('Запись удалена');
+    const docRef = db.collection('donations').doc(id);
+    const doc = await docRef.get();
+    
+    // Получаем сумму удаляемого доната
+    const amount = doc.exists ? (Number(doc.data().amount) || 0) : 0;
+
+    // Удаляем запись
+    await docRef.delete();
+
+    // Уменьшаем общую сумму, чтобы она не превышала реальную
+    if (amount > 0) {
+      const settingsRef = db.collection('settings').doc('global');
+      const settingsDoc = await settingsRef.get();
+      const currentTotal = settingsDoc.exists ? (Number(settingsDoc.data().donateCurrent) || 0) : 0;
+      
+      await settingsRef.set({
+        donateCurrent: Math.max(0, currentTotal - amount) // Защита от ухода в минус
+      }, { merge: true });
+    }
+
+    showToast('Запись удалена, сумма сбора скорректирована');
     loadDonations();
-  } catch(err) {
-    showToast('Ошибка удаления: ' + err.message);
-  }
-}
-
-async function saveDonateSettings(e) {
-  e.preventDefault();
-  const goal = parseInt(document.getElementById('masterDonGoal').value);
-  const current = parseInt(document.getElementById('masterDonCurrent').value);
-  const date = document.getElementById('masterDonDate').value;
-
-  try {
-    await db.collection('settings').doc('global').set({
-      donateGoal: goal, donateCurrent: current, donateDate: date
-    }, { merge: true });
-    closeModal('masterAdminModal');
-    showToast('Настройки доната обновлены!');
     loadDonateSettings();
   } catch(err) {
-    showToast('Ошибка сохранения: ' + err.message);
+    showToast('Ошибка удаления: ' + err.message);
   }
 }
