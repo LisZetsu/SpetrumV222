@@ -26,3 +26,121 @@
   .tracker-steps { grid-template-columns: repeat(2, 1fr); }
   .rules-grid { grid-template-columns: 1fr; }
 }
+/* ============ Мобильная адаптация модалок и админ-таблиц ============ */
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+  .modal {
+    padding: 1.8rem 1.2rem;
+    border-radius: 20px;
+    max-height: 95vh;
+    max-width: 100% !important;
+  }
+  .modal-close {
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+  .modal h2 {
+    font-size: 1.4rem !important;
+    padding-right: 2rem;
+    line-height: 1.3;
+  }
+
+  /* Админ-таблицы */
+  .admin-table {
+    font-size: 0.8rem;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .admin-table th,
+  .admin-table td {
+    padding: 0.6rem 0.4rem;
+    white-space: normal;
+  }
+  .admin-table select,
+  .admin-table input[type="text"] {
+    font-size: 0.75rem !important;
+    padding: 0.3rem !important;
+    min-width: 120px;
+  }
+  .admin-table .btn {
+    padding: 0.3rem 0.5rem !important;
+    font-size: 0.7rem !important;
+  }
+
+  /* Формы и поля */
+  .form-group label {
+    font-size: 0.8rem;
+  }
+  .form-control {
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+  }
+
+  /* IP-блок на главной */
+  .ip-box {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+  }
+  .status-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Кабинет: сайдбар сверху, но по центру */
+  .cabinet-sidebar {
+    padding: 1.5rem 1rem;
+  }
+  .skin-render-box {
+    width: 150px;
+    height: 200px;
+  }
+
+  /* Навигация */
+  nav {
+    gap: 0.7rem;
+    font-size: 0.8rem;
+  }
+  nav a {
+    font-size: 0.78rem;
+  }
+  .logo-text {
+    font-size: 1.2rem;
+  }
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 1.4rem 1rem;
+  }
+  .admin-table {
+    font-size: 0.72rem;
+  }
+  /* Все inline-flex контейнеры в модалках — в колонку */
+  .admin-table td > div[style*="display:flex"] {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem !important;
+  }
+  .admin-table select,
+  .admin-table input[type="text"] {
+    width: 100%;
+    min-width: 0;
+  }
+  .btn {
+    font-size: 0.8rem;
+    padding: 0.55rem 1rem;
+  }
+}
