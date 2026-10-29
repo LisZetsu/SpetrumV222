@@ -4,15 +4,24 @@ async function populateMasterModal() {
   const doc = await db.collection('settings').doc('global').get();
   const data = doc.exists ? doc.data() : {};
 
-  document.getElementById('masterTgChan').value = data.tgChannel || 'https://t.me/spectrum_smp';
-  document.getElementById('masterTgChat').value = data.tgChat || 'https://t.me/spectrum_private';
-  document.getElementById('masterDiscord').value = data.discord || 'https://discord.gg/spectrum';
-  document.getElementById('masterModpack').value = data.modpack || 'https://drive.google.com';
-  document.getElementById('masterFactionApply').value = data.factionApply || 'https://t.me/spectrum_smp';
-  document.getElementById('masterModListText').value = data.modListText || '• Create v0.5.1 — Инженерия\n• Farmer\'s Delight — Кулинария';
-  document.getElementById('masterServerLore').value = data.serverLore || 'Много веков назад мир существовал в привычной гармонии...';
-  document.getElementById('masterGuideDesc').value = data.guideDesc || 'Следуйте простой пошаговой инструкции...';
+  // === Ссылки ===
+  document.getElementById('masterTgChan').value       = data.tgChannel     || '';
+  document.getElementById('masterTgChat').value       = data.tgChat        || '';
+  document.getElementById('masterDiscord').value      = data.discord       || '';
+  document.getElementById('masterModpack').value      = data.modpack       || '';
+  document.getElementById('masterFactionApply').value = data.factionApply  || '';
 
+  // === Контент ===
+  document.getElementById('masterModListText').value = data.modListText || '';
+  document.getElementById('masterServerLore').value  = data.serverLore  || '';
+  document.getElementById('masterGuideDesc').value   = data.guideDesc   || '';
+
+  // === Донаты (этого блока не было — из-за него форма не сохранялась) ===
+  document.getElementById('masterDonGoal').value    = Number(data.donateGoal)    || 50000;
+  document.getElementById('masterDonCurrent').value = Number(data.donateCurrent) || 0;
+  document.getElementById('masterDonDate').value    = data.donateDate            || '31.12.2026';
+
+  // === Роли админов (только владелец видит) ===
   const isOwner = currentUser && currentUser.email === OWNER_EMAIL;
   const adminRolesSec = document.getElementById('masterAdminRolesSection');
 
@@ -31,12 +40,12 @@ async function populateMasterModal() {
             <td>${u.email}</td>
             <td><span style="color:var(--accent-gold); font-weight:bold;">${u.role || 'player'}</span></td>
             <td>
-              <div style="display:flex; gap:0.5rem;">
+              <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
                 <select id="roleSelect_${u.email.replace(/[@.]/g, '_')}" class="form-control" style="padding:0.3rem; font-size:0.8rem;">
-                  <option value="player" ${(!u.role || u.role === 'player') ? 'selected' : ''}>Игрок / Резидент</option>
-                  <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>🛡️ Модератор (Анкеты & Биографии)</option>
-                  <option value="tech_admin" ${u.role === 'tech_admin' ? 'selected' : ''}>🛠️ Тех. Админ (Контент & Новости)</option>
-                  <option value="deputy" ${u.role === 'deputy' ? 'selected' : ''}>👑 Зам. Владельца (Полный доступ)</option>
+                  <option value="player"     ${(!u.role || u.role === 'player')     ? 'selected' : ''}>Игрок / Резидент</option>
+                  <option value="admin"      ${u.role === 'admin'                   ? 'selected' : ''}>🛡️ Модератор</option>
+                  <option value="tech_admin" ${u.role === 'tech_admin'              ? 'selected' : ''}>🛠️ Тех. Админ</option>
+                  <option value="deputy"     ${u.role === 'deputy'                  ? 'selected' : ''}>👑 Зам. Владельца</option>
                 </select>
                 <button class="btn btn-gold" style="padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="saveUserRole('${u.email}', 'roleSelect_${u.email.replace(/[@.]/g, '_')}')">Сохранить</button>
               </div>
@@ -47,6 +56,31 @@ async function populateMasterModal() {
     });
     rTable.innerHTML = rHtml;
   } else {
+    adminRolesSec.style.display = 'none';
+  }
+
+  // === Фракции ===
+  const usersSnap2 = await db.collection('users').get();
+  const fTable = document.getElementById('masterPlayerFactionsList');
+  let fHtml = '';
+  usersSnap2.forEach(uDoc => {
+    const u = uDoc.data();
+    fHtml += `
+      <tr>
+        <td><b>${u.nick}</b></td>
+        <td>${u.email}</td>
+        <td><span style="color:var(--accent-pink);">${u.faction || 'Резидент'}</span></td>
+        <td>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <input type="text" id="factionInput_${u.email.replace(/[@.]/g, '_')}" class="form-control" style="padding:0.3rem; font-size:0.8rem; min-width:140px;" placeholder="Напр. Фракция: Инженеры" value="${u.faction || 'Резидент'}">
+            <button class="btn btn-gold" style="padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="saveUserFaction('${u.email}', 'factionInput_${u.email.replace(/[@.]/g, '_')}')">Сохранить</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+  fTable.innerHTML = fHtml;
+} else {
     adminRolesSec.style.display = 'none';
   }
 
