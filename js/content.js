@@ -30,9 +30,6 @@ async function loadGlobalSettings() {
       if (data.rulesRp)     document.getElementById('ruleCardRpDisplay').innerHTML = data.rulesRp.replace(/\n/g, '<br>');
       if (data.rulesTech)   document.getElementById('ruleCardTechDisplay').innerHTML = data.rulesTech.replace(/\n/g, '<br>');
 
-      if (data.donateGoal) document.getElementById('masterDonGoal').value = data.donateGoal;
-      if (data.donateCurrent) document.getElementById('masterDonCurrent').value = data.donateCurrent;
-      if (data.donateDate) document.getElementById('masterDonDate').value = data.donateDate;
     }
   } catch (err) {
     console.log('Error loading settings:', err);
